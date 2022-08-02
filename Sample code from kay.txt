@@ -1,0 +1,57 @@
+ https://energy-api.milsat.africa/swagger/index.html
+ 
+ gsm_send_serial("AT+CIPSHUT");
+ gsm_send_serial("AT+SAPBR=1,1");
+ gsm_send_serial("AT+SAPBR=2,1");
+ gsm_send_serial("AT+SAPBR=3,1,\"APN\",\"web.gprs.mtnnigeria.net\"");  // APN JTM2M
+ gsm_send_serial("AT+HTTPINIT");
+ gsm_send_serial("AT+HTTPPARA=CID,1");
+ gsm_send_serial("AT+HTTPPARA=URL," + url);
+ gsm_send_serial("AT+HTTPPARA=\"CONTENT\",\"application/json\"");
+ gsm_send_serial("AT+HTTPDATA=" + String(sendToServer.length()) + ",100000");
+ gsm_send_serial(sendToServer);
+ gsm_send_serial("AT+HTTPACTION=1");
+ //check_server_response();
+ gsm_send_serial("AT+HTTPREAD");
+ gsm_send_serial("AT+HTTPTERM");
+ gsm_send_serial("AT+SAPBR=0,1");
+ gsm_send_serial("AT+CIPSHUT");
+
+
+
+
+def upload_to_server(sendToServer, url):    
+    print('Preparing to send Readings')
+    ser.write(b"AT+CIPSHUT"+b"\r\n".encode('ascii'))
+    time.sleep(0.5)
+    ser.write(b"AT+SAPBR=1,1"+b"\r\n".encode('ascii'))
+    time.sleep(0.5)
+    ser.write(b"AT+SAPBR=2,1"+b"\r\n".encode('ascii'))
+    time.sleep(0.5)
+    ser.write(b"AT+SAPBR=3,1,\"APN\",\"web.gprs.mtnnigeria.net\""+b"\r\n".encode('ascii'))  # APN JTM2M
+    time.sleep(0.5)
+    ser.write(b"AT+HTTPINIT"+b"\r\n".encode('ascii'))
+    time.sleep(0.5)
+    ser.write(b"AT+HTTPPARA=CID,1"+b"\r\n".encode('ascii'))
+    time.sleep(0.5)
+    ser.write(b"AT+HTTPPARA=URL," + url +b"\r\n".encode('ascii'))
+    time.sleep(0.5)
+    ser.write(b"AT+HTTPPARA=\"CONTENT\",\"application/json\""+b"\r\n".encode('ascii'))
+    time.sleep(0.5)
+    ser.write(b"AT+HTTPDATA=" + str(len(sendToServer)) + ",100000"+b"\r\n".encode('ascii'))
+    time.sleep(0.5)
+    ser.write(sendToServer+b"\r\n".encode('ascii'))
+    time.sleep(0.5)
+    ser.write(b"AT+HTTPACTION=1"+b"\r\n".encode('ascii'))
+    #check_server_response()
+    time.sleep(0.5)
+    ser.write(b"AT+HTTPREAD"+b"\r\n".encode('ascii'))
+    time.sleep(0.5)
+    ser.write(b"AT+HTTPTERM"+b"\r\n".encode('ascii'))
+    time.sleep(0.5)
+    ser.write(b"AT+SAPBR=0,1"+b"\r\n".encode('ascii'))
+    time.sleep(0.5)
+    ser.write(b"AT+CIPSHUT"+b"\r\n".encode('ascii'))
+    print ("Readings Sent Online")
+    time.sleep(2)
+    ser.flushInput()  # clear serial data in buffer if any
